@@ -8,7 +8,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 JWT_SECRET = environ.get("JWT_SECRET", "dev-secret-change-me")
 JWT_ALGORITHM = environ.get("JWT_ALGORITHM", "HS256")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(environ.get("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
+AUTH_SESSION_TTL_MINUTES = int(environ.get("AUTH_SESSION_TTL_MINUTES", "60"))
 
 bearer_scheme = HTTPBearer(auto_error=False)
 
@@ -26,7 +26,7 @@ def create_token(user_id: str, email: str, role: str) -> str:
         "sub": user_id,
         "email": email,
         "role": role,
-        "exp": datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
+        "exp": datetime.now(timezone.utc) + timedelta(minutes=AUTH_SESSION_TTL_MINUTES),
     }
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
